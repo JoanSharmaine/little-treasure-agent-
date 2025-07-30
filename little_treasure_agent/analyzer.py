@@ -1,7 +1,7 @@
 """Portfolio analysis utilities."""
 from __future__ import annotations
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 import pandas as pd
 
 from .data import get_fund_data
@@ -38,3 +38,19 @@ def analyze_portfolio(holdings: Dict[str, float]) -> pd.DataFrame:
     else:
         df["allocation"] = 0.0
     return df
+
+
+def suggest_rebalance(df: pd.DataFrame) -> List[Tuple[str, float]]:
+    """Suggest trades to rebalance portfolio to equal weights."""
+    if df.empty:
+        return []
+    n = len(df)
+    target = 1.0 / n
+    suggestions: List[Tuple[str, float]] = []
+    for _, row in df.iterrows():
+        diff = target - row["allocation"]
+        if abs(diff) < 0.01:
+            continue
+        trade_qty = diff * df["value"].sum() / row["price"]
+        suggestions.append((row["symbol"], trade_qty))
+    return suggestions

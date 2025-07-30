@@ -5,8 +5,9 @@ import argparse
 from typing import Dict
 
 from .news import fetch_news
-from .analyzer import analyze_portfolio
+from .analyzer import analyze_portfolio, suggest_rebalance
 from .report import generate_report
+from .sectors import identify_top_sectors
 
 
 def main() -> None:
@@ -21,7 +22,14 @@ def main() -> None:
 
     news = fetch_news()
     analysis = analyze_portfolio(holdings)
+    suggestions = suggest_rebalance(analysis)
+    sectors = identify_top_sectors()
     report = generate_report(news, analysis)
+    if sectors:
+        report += "\n\n推荐关注板块: " + ", ".join(sectors)
+    if suggestions:
+        trades = "; ".join(f"{sym}:{qty:+.2f}" for sym, qty in suggestions)
+        report += f"\n\n调仓建议: {trades}"
     print(report)
 
 

@@ -6,7 +6,7 @@ import pandas as pd
 from datetime import date
 
 import os
-from langchain.llms import OpenAI
+from langchain_community.llms import OpenAI
 
 
 def _load_llm() -> OpenAI | None:

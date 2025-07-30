@@ -1,6 +1,6 @@
 feedparser
 langchain
-openbb
 pandas
 yfinance
 tabulate
+langchain-community
